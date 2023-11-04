@@ -9,8 +9,24 @@ class Product(models.Model):
         verbose_name='Наименование'
     )
     slug = models.SlugField(max_length=15, unique=True)
-    # image = None
-    price = models.PositiveIntegerField(verbose_name='Цена')
+    image_small = models.ImageField(
+        upload_to='prod_image_small',
+        null=True,
+        verbose_name='Фото мал.'
+    )
+    image_medium = models.ImageField(
+        upload_to='prod_image_med',
+        null=True,
+        verbose_name='Фото ср.'
+    )
+    image_large = models.ImageField(
+        upload_to='prod_image_large',
+        null=True,
+        verbose_name='Фото бол.'
+    )
+    price = models.PositiveIntegerField(
+        verbose_name='Цена'
+    )
     subcategory = models.ForeignKey(
         'Subcategory',
         null=True,
@@ -32,7 +48,11 @@ class Subcategory(models.Model):
         unique=True,
         verbose_name='Наименование')
     slug = models.SlugField(max_length=15, unique=True)
-    # image = None
+    image = models.ImageField(
+        upload_to='subcat_image',
+        null=True,
+        verbose_name='Фото'
+    )
     category = models.ForeignKey(
         'Category',
         null=True,
@@ -55,7 +75,11 @@ class Category(models.Model):
         verbose_name='Наименование'
     )
     slug = models.SlugField(max_length=15, unique=True)
-    # image = None
+    image = models.ImageField(
+        upload_to='cat_image',
+        null=True,
+        verbose_name='Фото'
+    )
 
     def __str__(self):
         return self.name
@@ -69,7 +93,8 @@ class Basket(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        blank=True, null=True
+        blank=True,
+        null=True
     )
     products = models.ManyToManyField(
         'Product',
@@ -80,6 +105,4 @@ class Basket(models.Model):
     class Meta:
         verbose_name = "Корзина"
         verbose_name_plural = "Корзины"
-
-
 
