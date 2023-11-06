@@ -11,17 +11,17 @@ class Product(models.Model):
     slug = models.SlugField(max_length=15, unique=True)
     image_small = models.ImageField(
         upload_to='prod_image_small',
-        null=True,
+        null=True, blank=True,
         verbose_name='Фото мал.'
     )
     image_medium = models.ImageField(
         upload_to='prod_image_med',
-        null=True,
+        null=True, blank=True,
         verbose_name='Фото ср.'
     )
     image_large = models.ImageField(
         upload_to='prod_image_large',
-        null=True,
+        null=True, blank=True,
         verbose_name='Фото бол.'
     )
     price = models.PositiveIntegerField(
@@ -50,7 +50,7 @@ class Subcategory(models.Model):
     slug = models.SlugField(max_length=15, unique=True)
     image = models.ImageField(
         upload_to='subcat_image',
-        null=True,
+        null=True, blank=True,
         verbose_name='Фото'
     )
     category = models.ForeignKey(
@@ -77,7 +77,7 @@ class Category(models.Model):
     slug = models.SlugField(max_length=15, unique=True)
     image = models.ImageField(
         upload_to='cat_image',
-        null=True,
+        null=True, blank=True,
         verbose_name='Фото'
     )
 
@@ -96,13 +96,26 @@ class Basket(models.Model):
         blank=True,
         null=True
     )
-    products = models.ManyToManyField(
-        'Product',
-        blank=True,
-        related_name='products'
-    )
+
 
     class Meta:
         verbose_name = "Корзина"
         verbose_name_plural = "Корзины"
 
+
+class BasketProduct(models.Model):
+    basket = models.ForeignKey(
+        'Basket',
+        null=True, blank=True,
+        on_delete=models.CASCADE,
+        related_name='basketproduct',
+        verbose_name='Корзина-Продукт')
+    product = models.ForeignKey(
+        'Product',
+        null=True,
+        on_delete=models.CASCADE,
+        related_name='basketproduct',
+        verbose_name='Продукт')
+    quantity = models.PositiveIntegerField(
+        verbose_name='Количество'
+    )

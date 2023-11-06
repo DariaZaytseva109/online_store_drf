@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from online_store_app.models import Product, Subcategory, Category, Basket
+from online_store_app.models import Product, Subcategory, Category, Basket, BasketProduct
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -14,6 +14,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'price', 'subcategory',
             'image_small', 'image_medium',
             'image_large']
+
 
 class ProductInBasketSerializer(serializers.ModelSerializer):
 
@@ -44,10 +45,29 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['name', 'subcategories', 'image']
 
 
+class BasketProductSerializer(serializers.ModelSerializer):
+    product = ProductInBasketSerializer()
+    subtotal = serializers.SerializerMethodField()
+
+    def get_subtotal(self, obj):
+        return obj.product.price * obj.quantity
+
+    class Meta:
+        model = BasketProduct
+        fields = ['product', 'quantity', 'subtotal']
+
+
 class BasketSerializer(serializers.ModelSerializer):
-    products = ProductInBasketSerializer(many=True)
     user = serializers.StringRelatedField(read_only=True)
+    basketproduct = BasketProductSerializer(many=True)
+    total = serializers.SerializerMethodField()
+
+    def get_total(self, obj):
+        total = 0
+        for bp in obj.basketproduct.all():
+            total += bp.product.price * bp.quantity
+        return {"total": total}
 
     class Meta:
         model = Basket
-        fields = ['user', 'products']
+        fields = ['user', 'basketproduct', 'total']
