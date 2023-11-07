@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 
 from .models import Product, Subcategory, Category, Basket, BasketProduct
 
@@ -26,17 +25,17 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class BasketAdmin(admin.ModelAdmin):
-    list_display = ['user']
-    list_display_links = ['user']
+    list_display = ['id', 'user']
+    list_display_links = ['id', 'user']
     list_per_page = 10
-    search_fields = ['user']
+    search_fields = ['id', 'user']
 
 
 class BasketProductAdmin(admin.ModelAdmin):
-    list_display = ['product', 'quantity']
-    list_display_links = ['product']
+    list_display = ['id', 'basket', 'product', 'quantity']
+    list_display_links = ['id', 'basket', 'product']
     list_per_page = 10
-    search_fields = ['product']
+    search_fields = ['basket', 'product']
 
 
 admin.site.register(Product, ProductAdmin)

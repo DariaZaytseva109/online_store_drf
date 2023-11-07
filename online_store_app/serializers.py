@@ -17,13 +17,14 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductInBasketSerializer(serializers.ModelSerializer):
-
+    price = serializers.StringRelatedField(read_only=True)
     class Meta:
         model = Product
-        fields = [
+        fields = ['id',
             'name',
             'price',
-            'image_small']
+        ]
+
 
 class SubcategorySerializer(serializers.ModelSerializer):
     products = serializers.StringRelatedField(
@@ -46,8 +47,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class BasketProductSerializer(serializers.ModelSerializer):
-    product = ProductInBasketSerializer()
-    subtotal = serializers.SerializerMethodField()
+    product = ProductInBasketSerializer(read_only=True)
+    subtotal = serializers.SerializerMethodField(read_only=True)
 
     def get_subtotal(self, obj):
         return obj.product.price * obj.quantity
@@ -58,8 +59,7 @@ class BasketProductSerializer(serializers.ModelSerializer):
 
 
 class BasketSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
-    basketproduct = BasketProductSerializer(many=True)
+    basketproduct = BasketProductSerializer(many=True, read_only=True)
     total = serializers.SerializerMethodField()
 
     def get_total(self, obj):
@@ -67,7 +67,57 @@ class BasketSerializer(serializers.ModelSerializer):
         for bp in obj.basketproduct.all():
             total += bp.product.price * bp.quantity
         return {"total": total}
-
     class Meta:
         model = Basket
         fields = ['user', 'basketproduct', 'total']
+
+
+class BasketSerializer2(serializers.ModelSerializer):
+
+    class Meta:
+        model = Basket
+        fields = ['pk']
+
+class ProductInBasketSerializer2(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['pk']
+
+
+class BasketProductSerializer2(serializers.ModelSerializer):
+
+    product = ProductInBasketSerializer2(read_only=True)
+    quantity = serializers.IntegerField()
+    class Meta:
+        model = BasketProduct
+        fields = ['product', 'quantity']
+
+
+class BasketProductCreateSerializer(serializers.ModelSerializer):
+    basket = BasketSerializer2(read_only=True)
+    product = ProductInBasketSerializer2
+    quantity = serializers.IntegerField()
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    class Meta:
+        model = BasketProduct
+        fields = ['basket', 'product', 'quantity', 'user']
+
+    def create(self, validated_data):
+        print(validated_data)
+        user = validated_data['user']
+        basket = Basket.objects.get(user=user)
+        product = validated_data['product']
+        quantity = validated_data['quantity']
+        return BasketProduct(basket=basket, product=product, quantity=quantity)
+
+
+class BasketCleanSerializer(serializers.ModelSerializer):
+
+    def update(self, obj, validated_data):
+        for bp in obj.basketproduct.all():
+            bp.delete()
+        return obj
+
+    class Meta:
+        model = Basket
+        fields = ['user', 'basketproduct']
