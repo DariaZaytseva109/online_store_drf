@@ -7,7 +7,7 @@ from online_store_app.views import ProductView, \
     BasketViewClean, ImageView, BasketCreateView
 
 urlpatterns = [
-    path('basket/', BasketCreateView.as_view()),
+    path('basket/', BasketCreateView.as_view()),                         # создание корзины
     path('basket/<int:pk>/', BasketView.as_view()),                      # просмотр корзины
     path('basketproduct/add/', BasketProductViewCreate.as_view()),       # добавление продукта в корзину
     path('basketproduct/<int:pk>/', BasketProductViewUpdate.as_view()),  # изменение кол-ва
