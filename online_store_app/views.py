@@ -3,8 +3,9 @@ from rest_framework.permissions import IsAdminUser
 
 from online_store_app.models import Product, Category, Basket, BasketProduct, Image
 from online_store_app.permissions import IsOwner, IsOwnerBasketProduct
-from online_store_app.serializers import ProductSerializer, CategorySerializer, BasketSerializer, \
-    BasketProductSerializer2, BasketProductCreateSerializer, BasketCleanSerializer, ImageSerializer, \
+from online_store_app.serializers import ProductSerializer, \
+    CategorySerializer, BasketSerializer, BasketProductSerializer2, \
+    BasketProductCreateSerializer, BasketCleanSerializer, ImageSerializer, \
     BasketCreateSerializer
 
 
@@ -44,6 +45,7 @@ class BasketProductViewUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = BasketProduct.objects.all()
     serializer_class = BasketProductSerializer2
     permission_classes = (IsOwnerBasketProduct,)
+
 
 class BasketViewClean(generics.RetrieveUpdateAPIView):
     queryset = Basket.objects.all()

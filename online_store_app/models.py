@@ -105,7 +105,6 @@ class Basket(models.Model):
         null=True
     )
 
-
     class Meta:
         verbose_name = "Корзина"
         verbose_name_plural = "Корзины"
@@ -131,3 +130,7 @@ class BasketProduct(models.Model):
 
 class Image(models.Model):
     image_file = models.ImageField(upload_to='images/')
+
+    class Meta:
+        verbose_name = "Фото"
+        verbose_name_plural = "Фото"

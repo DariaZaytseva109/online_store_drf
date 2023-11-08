@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Product, Subcategory, Category, Basket, BasketProduct
+from .models import Product, Subcategory, Category, \
+    Basket, BasketProduct, Image
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -38,8 +39,15 @@ class BasketProductAdmin(admin.ModelAdmin):
     search_fields = ['basket', 'product']
 
 
+class ImageAdmin(admin.ModelAdmin):
+    list_display = ['id', 'image_file']
+    list_display_links = ['image_file']
+    list_per_page = 10
+
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Subcategory, SubcategoryAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Basket, BasketAdmin)
 admin.site.register(BasketProduct, BasketProductAdmin)
+admin.site.register(Image, ImageAdmin)
