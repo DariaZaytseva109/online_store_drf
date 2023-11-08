@@ -1,10 +1,11 @@
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAdminUser
 
-from online_store_app.models import Product, Category, Basket, BasketProduct
+from online_store_app.models import Product, Category, Basket, BasketProduct, Image
 from online_store_app.permissions import IsOwner, IsOwnerBasketProduct
 from online_store_app.serializers import ProductSerializer, CategorySerializer, BasketSerializer, \
-    BasketProductSerializer2, BasketProductCreateSerializer, BasketCleanSerializer
+    BasketProductSerializer2, BasketProductCreateSerializer, BasketCleanSerializer, ImageSerializer, \
+    BasketCreateSerializer
 
 
 class ProductView(viewsets.ModelViewSet):
@@ -49,6 +50,19 @@ class BasketViewClean(generics.RetrieveUpdateAPIView):
     http_method_names = ['get', 'post', 'put']
     serializer_class = BasketCleanSerializer
     permission_classes = (IsOwner,)
+
+
+class ImageView(viewsets.ModelViewSet):
+    queryset = Image.objects.all()
+    http_method_names = ['get']
+    serializer_class = ImageSerializer
+
+
+class BasketCreateView(generics.CreateAPIView):
+    queryset = BasketProduct.objects.all()
+    serializer_class = BasketCreateSerializer
+
+
 
 
 

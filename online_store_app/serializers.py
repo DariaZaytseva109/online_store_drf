@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from online_store_app.models import Product, Subcategory, Category, Basket, BasketProduct
+from online_store_app.models import Product, Subcategory, Category, Basket, BasketProduct, Image
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -121,3 +121,20 @@ class BasketCleanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Basket
         fields = ['user', 'basketproduct']
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = '__all__'
+
+class BasketCreateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    class Meta:
+        model = BasketProduct
+        fields = ['user']
+
+    def create(self, validated_data):
+        user = validated_data['user']
+        new_basket = Basket.objects.create(user=user)
+        return new_basket

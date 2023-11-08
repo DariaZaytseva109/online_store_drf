@@ -9,20 +9,26 @@ class Product(models.Model):
         verbose_name='Наименование'
     )
     slug = models.SlugField(max_length=15, unique=True)
-    image_small = models.ImageField(
-        upload_to='prod_image_small',
+    image_small = models.ForeignKey(
+        "Image",
         null=True, blank=True,
-        verbose_name='Фото мал.'
+        verbose_name='Фото мал.',
+        on_delete=models.SET_NULL,
+        related_name='image_small'
     )
-    image_medium = models.ImageField(
-        upload_to='prod_image_med',
+    image_medium = models.ForeignKey(
+        "Image",
         null=True, blank=True,
-        verbose_name='Фото ср.'
+        verbose_name='Фото ср.',
+        on_delete=models.SET_NULL,
+        related_name='image_medium'
     )
-    image_large = models.ImageField(
-        upload_to='prod_image_large',
+    image_large = models.ForeignKey(
+        "Image",
         null=True, blank=True,
-        verbose_name='Фото бол.'
+        verbose_name='Фото бол.',
+        on_delete=models.SET_NULL,
+        related_name='image_large'
     )
     price = models.PositiveIntegerField(
         verbose_name='Цена'
@@ -48,10 +54,11 @@ class Subcategory(models.Model):
         unique=True,
         verbose_name='Наименование')
     slug = models.SlugField(max_length=15, unique=True)
-    image = models.ImageField(
-        upload_to='subcat_image',
+    image = models.ForeignKey(
+        "Image",
         null=True, blank=True,
-        verbose_name='Фото'
+        verbose_name='Фото',
+        on_delete=models.SET_NULL
     )
     category = models.ForeignKey(
         'Category',
@@ -75,10 +82,11 @@ class Category(models.Model):
         verbose_name='Наименование'
     )
     slug = models.SlugField(max_length=15, unique=True)
-    image = models.ImageField(
-        upload_to='cat_image',
+    image = models.ForeignKey(
+        "Image",
         null=True, blank=True,
-        verbose_name='Фото'
+        verbose_name='Фото',
+        on_delete=models.SET_NULL
     )
 
     def __str__(self):
@@ -119,3 +127,7 @@ class BasketProduct(models.Model):
     quantity = models.PositiveIntegerField(
         verbose_name='Количество'
     )
+
+
+class Image(models.Model):
+    image_file = models.ImageField(upload_to='images/')
